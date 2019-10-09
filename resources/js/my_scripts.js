@@ -78,18 +78,23 @@ function loadStatsPage(){
 	var row_counter;
 	var col_counter;
 	var cell_value;
-	for(row_counter = 0; row_counter < table.rows.length; row_counter++)
+        var wins = 0;   // count the wins and losses
+        var losses = 0;
+	for(row_counter = 2; row_counter < table.rows.length; row_counter++)
 	{//Outer for loop iterates over each row
-		if(table.col[2]>table.col[3]){
-			
-		}
-		for(col_counter = 0; col_counter < table.rows[row_counter].cells.length; col_counter++)
-		{
-			cell_value = table.rows[row_counter].cells[col_counter].innerHTML;//Read in a cells current value
-			cell_value = parseInt(cell_value) + 2;//Increase the cell's value by 2
-			table.rows[row_counter].cells[col_counter].innerHTML = cell_value;//Update the actual html of the cell
-		}
+		if(table.rows[row_counter].cells[2].innerHTML > table.rows[row_counter].cells[3].innerHTML){
+			table.rows[row_counter].cells[4].innerHTML = "CU Boulder";
+                        wins++;
+		} else {
+                    table.rows[row_counter].cells[4].innerHTML = table.rows[row_counter].cells[1].innerHTML;
+                    losses++;
+                }
+
 	}
+
+        // set the wins and losses into the other table.
+        document.getElementById("wins").innerHTML = wins;
+        document.getElementById("losses").innerHTML = losses;
 
 }
 
@@ -137,3 +142,39 @@ function loadStatsPage(){
 					  avg_r_yards   - the average number of rushing yards for the player's Buff career
 					  avg_rec_yards - the average number of receiving yards for the player's Buff career
 */
+
+
+function switchPlayers(index) {
+
+    aPlayer = players[index];
+
+    document.getElementById("p_year").innerHTML = aPlayer.year;
+    document.getElementById("p_major").innerHTML = aPlayer.major;
+    document.getElementById("g_played").innerHTML = aPlayer.games_played;
+    document.getElementById("player_img").src = aPlayer.img;
+    document.getElementById("p_yards").innerHTML = aPlayer.pass_yards;
+    document.getElementById("r_yards").innerHTML = aPlayer.rushing_yards;
+    document.getElementById("rec_yards").innerHTML = aPlayer.receiving_yards;
+
+    document.getElementById("avg_p_yards").innerHTML = Math.floor(aPlayer.pass_yards / aPlayer.games_played);
+    document.getElementById("avg_r_yards").innerHTML = Math.floor(aPlayer.rushing_yards / aPlayer.games_played);
+    document.getElementById("avg_rec_yards").innerHTML = Math.floor(aPlayer.receiving_yards / aPlayer.games_played);
+
+}
+
+function loadPlayersPage() {
+    var dropmenu = document.getElementById("player_selector");
+
+    for (pidx = 0; pidx < players.length; pidx++) {
+        aPlayer = players[pidx];
+        // Create an anchor tag.
+        var t = document.createElement("A");
+        t.href = "#";
+        t.text = aPlayer.name;
+        // create anonymous function, couldn't figure out a better way.
+        // see https://stackoverflow.com/questions/20129236/creating-functions-dynamically-in-js
+        t.onclick = new Function('', 'switchPlayers('+pidx+');');
+        dropmenu.appendChild(t);
+    }
+
+}
